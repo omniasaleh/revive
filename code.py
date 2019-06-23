@@ -141,7 +141,7 @@ def preprocessing(data):
     
     ground_truth = torch.from_numpy(ab_images).float()
     
-    return (result.cuda(), ground_truth.cuda())  # shape (N, 4, H, W)
+    return (result, ground_truth)  # shape (N, 4, H, W)
 
 def get_samplers(dataset_size):
     indices = list(range(dataset_size))
@@ -389,9 +389,7 @@ from torch.nn import init
 #train_losses,test_losses=[],[]
 torch.manual_seed(opt['seed'])
 
-if not torch.cuda.is_available():
-  raise Exception("No GPU found, please run without --cuda")
-device = torch.device("cuda")
+device = torch.device("cpu")
 
 # loader = torch.utils.data.TensorDataset(ic)
 data = load_data(opt)
@@ -459,8 +457,8 @@ def train(epoch):
 #         if iteration%200==0:
 #            checkpoint(epoch,loss_train,0,0)
         output.retain_grad()
-        loss_G_CE = criterionCE(fake_B_class.type(torch.cuda.FloatTensor),
-                                          real_B_enc[:, 0, :, :].type(torch.cuda.LongTensor))          
+        loss_G_CE = criterionCE(fake_B_class.type(torch.FloatTensor),
+                                          real_B_enc[:, 0, :, :].type(torch.LongTensor))          
         loss = 10 * torch.mean(criterion(output, ground_truth))+loss_G_CE 
         loss.retain_grad()
         loss_train += loss.item()

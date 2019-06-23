@@ -407,7 +407,7 @@ training_data_loader = DataLoader(dataset=data,
 #testing_data_loader = DataLoader(dataset=data, batch_size=opt['testBatchSize'], sampler=valid_sampler)
 
 print('===> Building model')
-model = Unet().cuda()
+model = Unet()
 if type(model) == nn.Conv2d:
   init.normal_(model.weight.data, 0.0, .02)
 if type(model) == nn.BatchNorm2d:
